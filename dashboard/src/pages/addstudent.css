@@ -1,0 +1,25 @@
+#container
+{
+    display: flex;
+}
+
+#form-container
+{
+    display:flex;
+    gap:15px;
+    flex-direction:column;
+    margin-left:0px;
+}
+
+#title
+{
+   font-weight: bold;
+}
+
+#input-container
+{
+  display:flex;
+  width:200px;
+  flex-direction:column;
+  gap: 15px;
+}

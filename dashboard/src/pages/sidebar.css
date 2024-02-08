@@ -1,0 +1,23 @@
+#container
+{
+    display: flex;
+}
+
+#form-container-for-sidebar
+{
+    display:flex;
+    flex-Direction:column;
+    height:100vh;
+    width:300px;
+    background-color:#000000;
+    align-Content:center;
+    align-Items:left;
+    justify-Content:center;
+}
+
+#sidebar-button
+{
+    color:white;
+    margin-Top:10px;
+    font-Weight:Bold;
+}
