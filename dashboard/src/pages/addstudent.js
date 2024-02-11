@@ -14,48 +14,48 @@ function Addstudent() {
 
   async function handleAddStudent()
   {
-    const studentData = 
-    {
-      IdNumber,
-      FirstName,
-      LastName,
-      MiddleName,
-      Course,
-      Year,
-    }
-
-    try
-  {
-    const response = await fetch("http://localhost:1337/addStudent", 
-    {
-      method: "POST",
-      headers:
+      const studentData = 
       {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(studentData),
-    });
+        IdNumber,
+        FirstName,
+        LastName,
+        MiddleName,
+        Course,
+        Year,
+      }
 
-    const result = await response.json()
+      try
+    {
+      const response = await fetch("http://localhost:1337/addStudent", 
+      {
+        method: "POST",
+        headers:
+        {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentData),
+      });
 
-    if(result.success)
+      const result = await response.json()
+
+      if(result.success)
+      {
+        setIdNumber("");
+        setFirstName("");
+        setLastName("");
+        setMiddleName("");
+        setCourse("");
+        setYear("");
+        alert(result.message);
+      }else
+      {
+        alert("Failed to add student. Please try again.");
+      }
+    }catch(error)
     {
-      setIdNumber("");
-      setFirstName("");
-      setLastName("");
-      setMiddleName("");
-      setCourse("");
-      setYear("");
-      alert(result.message);
-    }else
-    {
-      alert("Failed to add student. Please try again.");
+      console.error("Error adding student:", error);
+      alert("An error occured. Please try again.");
     }
-  }catch(error)
-  {
-    console.error("Error adding student:", error);
-    alert("An error occured. Please try again.");
-  }
   }
 
   

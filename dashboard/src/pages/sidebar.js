@@ -21,6 +21,12 @@ const sidebar = () => {
             </Button>
         </Box>
       
+        <Box>
+            <Button href='/viewstudent' variant="text" startIcon={<ErrorOutlineIcon />} id='sidebar-button'>
+            View Students
+            </Button>
+        </Box>
+
       </Container>
     </div>
   )

@@ -16,6 +16,7 @@ app.post("/addStudent", (req, res) =>
 {
     const studentData = req.body;
     const filePath = path.join(__dirname, "students.json");
+    
     let existingData = [];
     try
     {
@@ -30,9 +31,20 @@ app.post("/addStudent", (req, res) =>
     fs.writeFileSync("students.json", JSON.stringify(existingData, null, 2));
 
     res.json({ success: true, message: "Student added successfully!"});
+    
 })
   const port = 1337;
 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
+});
+
+app.get("/viewStudents", (req, res) => {
+  try {
+    const studentData = JSON.parse(fs.readFileSync("students.json"));
+    res.json(studentData);
+  } catch (error) {
+    console.error("Error reading student data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
