@@ -6,8 +6,6 @@ const fs = require("fs");
 app.use(cors());
 app.use(bodyParser.json());
 
-const path = require('path');
-
 app.get("/", (req, res) => {
     res.send("Hello, world!");
   });
@@ -15,12 +13,11 @@ app.get("/", (req, res) => {
 app.post("/addStudent", (req, res) => 
 {
     const studentData = req.body;
-    const filePath = path.join(__dirname, "students.json");
     
     let existingData = [];
     try
     {
-        existingData = JSON.parse(fs.readFileSync("students.json"));
+        existingData = JSON.parse(fs.readFileSync("s tudents.json"));
     }catch(error)
     {
 

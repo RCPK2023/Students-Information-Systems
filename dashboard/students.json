@@ -1,26 +1,10 @@
 [
   {
-    "IdNumber": "5",
-    "FirstName": "5",
-    "LastName": "5",
-    "MiddleName": "5",
-    "Course": "5",
-    "Year": "5"
-  },
-  {
-    "IdNumber": "",
-    "FirstName": "",
-    "LastName": "",
-    "MiddleName": "",
-    "Course": "",
-    "Year": ""
-  },
-  {
-    "IdNumber": "",
-    "FirstName": "",
-    "LastName": "",
-    "MiddleName": "",
-    "Course": "",
-    "Year": ""
+    "IdNumber": "3",
+    "FirstName": "3",
+    "LastName": "3",
+    "MiddleName": "3",
+    "Course": "3",
+    "Year": "3"
   }
 ]
