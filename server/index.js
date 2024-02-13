@@ -5,37 +5,36 @@ const bodyParser = require('body-parser');
 const fs = require("fs");
 app.use(cors());
 app.use(bodyParser.json());
-
+ 
+ 
 app.get("/", (req, res) => {
     res.send("Hello, world!");
   });
+ 
+app.post("/AddStudent", (req, res) => {
+  const studentData = req.body;
+ 
+  let existingData = [];
+  try{
+    existingData = JSON.parse(fs.readFileSync("students.json"));
+  }catch(error) {
 
-app.post("/addStudent", (req, res) => 
-{
-    const studentData = req.body;
-    
-    let existingData = [];
-    try
-    {
-        existingData = JSON.parse(fs.readFileSync("s tudents.json"));
-    }catch(error)
-    {
+  }
+ 
 
-    }
+  existingData.push(studentData);
+ 
 
-    existingData.push(studentData);
-
-    fs.writeFileSync("students.json", JSON.stringify(existingData, null, 2));
-
-    res.json({ success: true, message: "Student added successfully!"});
-    
+  fs.writeFileSync("students.json", JSON.stringify(existingData, null, 2));
+ 
+  res.json({ success: true, message: "Student added Successfully!" });
 })
   const port = 1337;
-
+ 
 app.listen(port, () => {
   console.log(`Server running on ${port}`);
 });
-
+ 
 app.get("/viewStudents", (req, res) => {
   try {
     const studentData = JSON.parse(fs.readFileSync("students.json"));

@@ -4,9 +4,10 @@
     flex-direction: row;
 }
 
-#view-container
+.view-container
 {
     display:flex;
     gap:15px;
     margin-left:0px;
+    width: 100vw;
 }
