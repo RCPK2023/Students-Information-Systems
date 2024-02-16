@@ -9,12 +9,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 
 function ViewStudent() {
   
-
+  //functions 'stead of consts for es7 format
+  //The textfields are pretty wierd right now, please make it look better
   const style = {
+    display: 'flex',
+    flexDirection:'column',
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -90,14 +93,58 @@ function ViewStudent() {
                       Student Information
                     </Typography>
                     <Typography id="modal-modal-description" sx={{ mt: 2}}>
-                      ID Number: {student.IdNumber}<br/>
-                      First Name: {student.FirstName}<br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="ID Number"
+                    variant="outlined"
+                    value={student.IdNumber}
+                    sx={{ width: "200px" }}/><br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="First Name"
+                    variant="outlined"
+                    value={student.FirstName}
+                    sx={{ width: "200px" }}/><br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="Last Name"
+                    variant="outlined"
+                    value={student.LastName}
+                    sx={{ width: "200px" }}/><br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="Middle Name"
+                    variant="outlined"
+                    value={student.MiddleName}
+                    sx={{ width: "200px" }}/><br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="Course"
+                    variant="outlined"
+                    value={student.Course}
+                    sx={{ width: "200px" }}/><br/>
+
+                    <TextField
+                    id="outlined-basic"
+                    label="Year"
+                    variant="outlined"
+                    value={student.Year}
+                    sx={{ width: "200px" }}/><br/>
+
+                      {/* Make it into textfield, possibly create an already made state of the current information */}
+                      {/* ID Number: {student.IdNumber}<br/> */}
+                      {/* First Name: {student.FirstName}<br/>
                       Last Name: {student.LastName}<br/>
                       Middle Name:{student.MiddleName}<br/>
                       Course: {student.Course}<br/>
-                      Year: {student.Year}<br/>
+                      Year: {student.Year}<br/> */}
                     </Typography>
-                    <Button variant="contained" onClick={handleClose}>CLOSE</Button>
+                    <Button variant="contained" onClick={handleClose}  sx={{ width: "100px" }}>CLOSE</Button>
                   </Box>
                   </Modal>
                 </TableCell>
