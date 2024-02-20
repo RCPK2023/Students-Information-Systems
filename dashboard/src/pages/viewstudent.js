@@ -13,7 +13,10 @@ import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 
 function ViewStudent() {
   
-  //functions 'stead of consts for es7 format
+  //TO DO:
+  //GOAL: Textfields should edit the json
+  //PROBLEM: backend can't hear frontend, can't also GET or show it manually, server is up btw, but getting the individual ones not
+  //may need to setup more stuff for it
 
   const style = {
     display: 'flex',
@@ -30,23 +33,17 @@ function ViewStudent() {
     gap: "5px"
   };
 
-  const styleButton = 
-  {
+  const styleButton = {
     width: '200px',
     marginBottom: '15px'
   };
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [open, setOpen] = React.useState(false);
-
-  const handleOpen = (StudentId) => {
-    setSelectedStudent(StudentId);
-    setOpen(true);
-  }
-  const handleClose = () => setOpen(false);
+  const [editableStudent, setEditableStudent] = useState();
   const [Students, setStudents] = useState([]);
-
-    useEffect(() => 
+  
+  useEffect(() => 
     {
         axios
         .get('http://localhost:1337/viewStudents') 
@@ -58,6 +55,61 @@ function ViewStudent() {
             console.error("Error fetching student data:", error);
         });       
     }, []);
+
+    const handleOpen = (studentId) => {
+      const studentToEdit = Students.find(student => student.IdNumber === studentId);
+      if (studentToEdit) {
+        studentToEdit.id = studentId;
+        setEditableStudent(studentToEdit);
+        setSelectedStudent(studentId);
+        setOpen(true);
+      } else {
+        console.error('Selected student data not found');
+      }
+    }
+ 
+
+  const handleClose = () => setOpen(false);
+
+  const saveEditedStudent = () => {
+
+    if (!editableStudent || !editableStudent.id) {
+      console.error('Editable student data is missing or invalid');
+      return;
+    }
+    const studentId = editableStudent.IdNumber;
+
+    axios.put(`http://localhost:1337/updateStudent/${studentId}`, editableStudent)
+      .then(response => {
+        console.log('Student updated successfully:', response.data);
+        setEditableStudent(null); 
+        setOpen(false);
+      })
+      .catch(error => {
+        console.error('Error updating student:', error);
+      });
+  };
+  
+  // function handleSaveChanges() {
+  //   axios.put(`http://localhost:1337/editStudent`, editedStudent)
+  //     .then(response => {
+  //       console.log("Student data updated successfully!");
+       
+  //       const updatedStudents = students.map(student => {
+  //         if (student.ID === editedStudent.ID) {
+  //           return editedStudent;
+  //         } else {
+  //           return student;
+  //         }
+  //       });
+  //       setStudents(updatedStudents);
+  //       handleCloseModal();
+  //     })
+  //     .catch(error => {
+  //       console.error("Error updating student data:", error);
+       
+  //     });
+  // }
 
   return (
     <div id='container'>
@@ -103,6 +155,7 @@ function ViewStudent() {
                     <Typography id="modal-modal-description" sx={{ mt: 2}}>
 
                     <TextField
+                    disabled
                     id="outlined-basic"
                     label="ID Number"
                     variant="outlined"
@@ -110,42 +163,59 @@ function ViewStudent() {
                     sx={styleButton}/><br/>
 
                     <TextField
-                    id="outlined-basic"
-                    label="First Name"
-                    variant="outlined"
-                    value={student.FirstName}
-                    sx={styleButton}/><br/>
+                      id="outlined-basic"
+                      label="First Name"
+                      variant="outlined"
+                      value={editableStudent?.FirstName || ''}
+                      onChange={(e) => setEditableStudent(prevState => ({...prevState, FirstName: e.target.value}))}
+                      sx={styleButton}
+                    /><br/>
 
                     <TextField
-                    id="outlined-basic"
-                    label="Last Name"
-                    variant="outlined"
-                    value={student.LastName}
-                    sx={styleButton}/><br/>
+                      id="outlined-basic"
+                      label="Last Name"
+                      variant="outlined"
+                      value={editableStudent?.LastName || ''}
+                      onChange={(e) => setEditableStudent(prevState => ({...prevState, LastName: e.target.value}))}
+                      sx={styleButton}
+                    /><br/>
 
                     <TextField
-                    id="outlined-basic"
-                    label="Middle Name"
-                    variant="outlined"
-                    value={student.MiddleName}
-                    sx={styleButton}/><br/>
+                      id="outlined-basic"
+                      label="Middle Name"
+                      variant="outlined"
+                      value={editableStudent?.MiddleName || ''}
+                      onChange={(e) => setEditableStudent(prevState => ({...prevState, MiddleName: e.target.value}))}
+                      sx={styleButton}
+                    /><br/>
 
                     <TextField
-                    id="outlined-basic"
-                    label="Course"
-                    variant="outlined"
-                    value={student.Course}
-                    sx={styleButton}/><br/>
+                      id="outlined-basic"
+                      label="Course"
+                      variant="outlined"
+                      value={editableStudent?.Course || ''}
+                      onChange={(e) => setEditableStudent(prevState => ({...prevState, Course: e.target.value}))}
+                      sx={styleButton}
+                    /><br/>
 
                     <TextField
-                    id="outlined-basic"
-                    label="Year"
-                    variant="outlined"
-                    value={student.Year}
-                    sx={styleButton}/><br/>
+                      id="outlined-basic"
+                      label="Year"
+                      variant="outlined"
+                      value={editableStudent?.Year || ''}
+                      onChange={(e) => setEditableStudent(prevState => ({...prevState, Year: e.target.value}))}
+                      sx={styleButton}
+                    /><br/>
 
                     </Typography>
+
+                    <Box>
+
+                    <Button variant="contained" onClick={saveEditedStudent}  sx={{ width: "100px", marginRight:'5px'}}>SAVE</Button>
                     <Button variant="contained" onClick={handleClose}  sx={{ width: "100px" }}>CLOSE</Button>
+
+                    </Box>
+                    
                   </Box>
                   </Modal>
                 </TableCell>
