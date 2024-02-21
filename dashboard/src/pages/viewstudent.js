@@ -12,11 +12,6 @@ import Paper from '@mui/material/Paper';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 
 function ViewStudent() {
-  
-  //TO DO:
-  //GOAL: Textfields should edit the json
-  //PROBLEM: backend can't hear frontend, can't also GET or show it manually, server is up btw, but getting the individual ones not
-  //may need to setup more stuff for it
 
   const style = {
     display: 'flex',
@@ -72,44 +67,30 @@ function ViewStudent() {
   const handleClose = () => setOpen(false);
 
   const saveEditedStudent = () => {
-
     if (!editableStudent || !editableStudent.id) {
       console.error('Editable student data is missing or invalid');
       return;
     }
     const studentId = editableStudent.IdNumber;
-
+  
     axios.put(`http://localhost:1337/updateStudent/${studentId}`, editableStudent)
       .then(response => {
         console.log('Student updated successfully:', response.data);
         setEditableStudent(null); 
         setOpen(false);
+        
+        axios.get('http://localhost:1337/viewStudents') 
+          .then((response) => {
+            setStudents(response.data);
+          })
+          .catch((error) => {
+            console.error("Error fetching updated student data:", error);
+          });
       })
       .catch(error => {
         console.error('Error updating student:', error);
       });
   };
-  
-  // function handleSaveChanges() {
-  //   axios.put(`http://localhost:1337/editStudent`, editedStudent)
-  //     .then(response => {
-  //       console.log("Student data updated successfully!");
-       
-  //       const updatedStudents = students.map(student => {
-  //         if (student.ID === editedStudent.ID) {
-  //           return editedStudent;
-  //         } else {
-  //           return student;
-  //         }
-  //       });
-  //       setStudents(updatedStudents);
-  //       handleCloseModal();
-  //     })
-  //     .catch(error => {
-  //       console.error("Error updating student data:", error);
-       
-  //     });
-  // }
 
   return (
     <div id='container'>
