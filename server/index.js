@@ -41,7 +41,7 @@ app.get("/viewStudents", (req, res) => {
   }
 });
 
-app.put('/updateStudent/', (req, res) => {
+app.put('/updateStudent/:id', (req, res) => {
   const studentId = req.params.id;
   const updatedStudentData = req.body;
   
@@ -56,5 +56,8 @@ app.put('/updateStudent/', (req, res) => {
 
   fs.writeFileSync('students.json', JSON.stringify(updatedStudentsData, null, 2));
 
-  res.json({ success: true, message: 'Student data updated successfully' });
+  // Send a response with a success message
+  res.status(200).json({ success: true, message: 'Student data updated successfully' });
 });
+
+

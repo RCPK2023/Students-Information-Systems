@@ -53,26 +53,44 @@ function ViewStudent() {
 
     const handleOpen = (studentId) => {
       const studentToEdit = Students.find(student => student.IdNumber === studentId);
+      
       if (studentToEdit) {
-        studentToEdit.id = studentId;
         setEditableStudent(studentToEdit);
         setSelectedStudent(studentId);
         setOpen(true);
+
       } else {
         console.error('Selected student data not found');
       }
     }
+
+    // const handleOpen = (studentId) => {
+    //   const studentToEdit = Students.find(student => student.IdNumber === studentId);
+    
+    //   if (studentToEdit) {
+    //     const editedStudent = { ...studentToEdit, id: studentId };
+    //     setEditableStudent(editedStudent);
+    //     setSelectedStudent(studentId);
+    //     setOpen(true);
+    //   } else {
+    //     console.error('Selected student data not found');
+    //   }
+     
+    // }
+    
  
 
   const handleClose = () => setOpen(false);
 
   const saveEditedStudent = () => {
-    if (!editableStudent || !editableStudent.id) {
+ 
+    if (!editableStudent || !editableStudent.IdNumber) {
       console.error('Editable student data is missing or invalid');
       return;
     }
+
     const studentId = editableStudent.IdNumber;
-  
+
     axios.put(`http://localhost:1337/updateStudent/${studentId}`, editableStudent)
       .then(response => {
         console.log('Student updated successfully:', response.data);
@@ -183,6 +201,7 @@ function ViewStudent() {
                       id="outlined-basic"
                       label="Year"
                       variant="outlined"
+                      type='number'
                       value={editableStudent?.Year || ''}
                       onChange={(e) => setEditableStudent(prevState => ({...prevState, Year: e.target.value}))}
                       sx={styleButton}

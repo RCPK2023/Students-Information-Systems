@@ -12,6 +12,12 @@ function Addstudent() {
   const [Course, setCourse] = useState("");
   const [Year, setYear] = useState("");
 
+  //In the Add and Edit components make sensible fieldviews i.e
+  // id is number and minimum of 8
+  // first/last should be strings, just letters and no special characteres
+  // year should be 1-5 and also number
+  // middle name should be a string and 1 letter
+
   async function handleAddStudent()
   {
       const studentData = 
@@ -84,7 +90,10 @@ function Addstudent() {
               label="ID Number"
               variant="outlined"
               value={IdNumber}
+              type="number"
               onChange={(e) => setIdNumber(e.target.value)}
+              onInput = {(e) =>{
+                e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,8) }}
               sx={{ width: "200px" }}
             />
             <TextField
