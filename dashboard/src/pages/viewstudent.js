@@ -110,6 +110,17 @@ function ViewStudent() {
       });
   };
 
+  const isLetter = (event) => {
+    const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;
+    return LETTERS_ONLY_REGEX.test(event.key);
+  };
+
+  const handleKeyDown = (event) => {
+    if (!isLetter(event)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div id='container'>
       <Sidebar></Sidebar>
@@ -166,6 +177,7 @@ function ViewStudent() {
                       label="First Name"
                       variant="outlined"
                       value={editableStudent?.FirstName || ''}
+                      onKeyDown={handleKeyDown}
                       onChange={(e) => setEditableStudent(prevState => ({...prevState, FirstName: e.target.value}))}
                       sx={styleButton}
                     /><br/>
@@ -175,6 +187,7 @@ function ViewStudent() {
                       label="Last Name"
                       variant="outlined"
                       value={editableStudent?.LastName || ''}
+                      onKeyDown={handleKeyDown}
                       onChange={(e) => setEditableStudent(prevState => ({...prevState, LastName: e.target.value}))}
                       sx={styleButton}
                     /><br/>
@@ -185,6 +198,14 @@ function ViewStudent() {
                       variant="outlined"
                       value={editableStudent?.MiddleName || ''}
                       onChange={(e) => setEditableStudent(prevState => ({...prevState, MiddleName: e.target.value}))}
+                      onKeyDown={(e) => {
+                        if (editableStudent?.MiddleName.length >= 1 && e.key !== "Backspace") {
+                          e.preventDefault();
+                        }
+                        if (!/^[a-zA-Z]+$/.test(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
                       sx={styleButton}
                     /><br/>
 

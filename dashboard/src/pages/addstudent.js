@@ -18,34 +18,28 @@ function Addstudent() {
   // year should be 1-5 and also number
   // middle name should be a string and 1 letter
 
-  async function handleAddStudent()
-  {
-      const studentData = 
-      {
-        IdNumber,
-        FirstName,
-        LastName,
-        MiddleName,
-        Course,
-        Year,
-      }
+  async function handleAddStudent() {
+    const studentData = {
+      IdNumber,
+      FirstName,
+      LastName,
+      MiddleName,
+      Course,
+      Year,
+    };
 
-      try
-    {
-      const response = await fetch("http://localhost:1337/addStudent", 
-      {
+    try {
+      const response = await fetch("http://localhost:1337/addStudent", {
         method: "POST",
-        headers:
-        {
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(studentData),
       });
 
-      const result = await response.json()
+      const result = await response.json();
 
-      if(result.success)
-      {
+      if (result.success) {
         setIdNumber("");
         setFirstName("");
         setLastName("");
@@ -53,27 +47,25 @@ function Addstudent() {
         setCourse("");
         setYear("");
         alert(result.message);
-      }else
-      {
+      } else {
         alert("Failed to add student. Please try again.");
       }
-    }catch(error)
-    {
+    } catch (error) {
       console.error("Error adding student:", error);
       alert("An error occured. Please try again.");
     }
   }
 
-  
+  const isLetter = (event) => {
+    const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;
+    return LETTERS_ONLY_REGEX.test(event.key);
+  };
 
-  function showStudentLog() {
-    console.log("Id Number: ", IdNumber);
-    console.log("First Name: ", FirstName);
-    console.log("Last Name: ", LastName);
-    console.log("Middle Name: ", MiddleName);
-    console.log("Course: ", Course);
-    console.log("Year: ", Year);
-  }
+  const handleKeyDown = (event) => {
+    if (!isLetter(event)) {
+      event.preventDefault();
+    }
+  };
 
   return (
     <div id="container">
@@ -92,8 +84,11 @@ function Addstudent() {
               value={IdNumber}
               type="number"
               onChange={(e) => setIdNumber(e.target.value)}
-              onInput = {(e) =>{
-                e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,8) }}
+              onInput={(e) => {
+                e.target.value = Math.max(0, parseInt(e.target.value))
+                  .toString()
+                  .slice(0, 8);
+              }}
               sx={{ width: "200px" }}
             />
             <TextField
@@ -101,6 +96,7 @@ function Addstudent() {
               label="First Name"
               variant="outlined"
               value={FirstName}
+              onKeyDown={handleKeyDown}
               onChange={(e) => setFirstName(e.target.value)}
               sx={{ width: "200px" }}
             />
@@ -109,6 +105,7 @@ function Addstudent() {
               label="Last Name"
               variant="outlined"
               value={LastName}
+              onKeyDown={handleKeyDown}
               onChange={(e) => setLastName(e.target.value)}
               sx={{ width: "200px" }}
             />
@@ -117,9 +114,20 @@ function Addstudent() {
               label="Middle Name"
               variant="outlined"
               value={MiddleName}
-              onChange={(e) => setMiddleName(e.target.value)}
+              onChange={(e) =>
+                setMiddleName(e.target.value.slice(0, 1).toUpperCase())
+              }
+              onKeyDown={(e) => {
+                if (MiddleName.length >= 1 && e.key !== "Backspace") {
+                  e.preventDefault();
+                }
+                if (!/^[a-zA-Z]+$/.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
               sx={{ width: "200px" }}
             />
+
             <TextField
               id="outlined-basic"
               label="Course"
@@ -132,6 +140,7 @@ function Addstudent() {
               id="outlined-basic"
               label="Year"
               variant="outlined"
+              type="number"
               value={Year}
               onChange={(e) => setYear(e.target.value)}
               sx={{ width: "200px" }}
