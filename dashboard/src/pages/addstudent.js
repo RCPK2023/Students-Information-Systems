@@ -1,4 +1,13 @@
-import { Button, Typography, TextField, Container } from "@mui/material";
+import {
+  Button,
+  Typography,
+  TextField,
+  Container,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl
+} from "@mui/material";
 import React from "react";
 import Sidebar from "./sidebar";
 import "./addstudent.css";
@@ -13,10 +22,8 @@ function Addstudent() {
   const [Year, setYear] = useState("");
 
   //In the Add and Edit components make sensible fieldviews i.e
-  // id is number and minimum of 8
-  // first/last should be strings, just letters and no special characteres
-  // year should be 1-5 and also number
-  // middle name should be a string and 1 letter
+  //Button validation
+  //Button should get minimum of 8 for ID and all textfields should be filled up, if not add the red part for warning 
 
   async function handleAddStudent() {
     const studentData = {
@@ -66,6 +73,7 @@ function Addstudent() {
       event.preventDefault();
     }
   };
+
 
   return (
     <div id="container">
@@ -136,15 +144,23 @@ function Addstudent() {
               onChange={(e) => setCourse(e.target.value)}
               sx={{ width: "200px" }}
             />
-            <TextField
-              id="outlined-basic"
-              label="Year"
-              variant="outlined"
-              type="number"
-              value={Year}
-              onChange={(e) => setYear(e.target.value)}
-              sx={{ width: "200px" }}
-            />
+
+            <FormControl>
+              <InputLabel id="demo-simple-select-label">Year</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={Year}
+                onChange={(e) => setYear(e.target.value)}
+                label="Year"
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+              </Select>
+            </FormControl>
 
             <Button
               variant="contained"

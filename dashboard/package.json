@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start:frontend": "react-scripts start",
-    "start:backend": "node ../server/index.js",
+    "start:backend": "nodemon ../server/index.js",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   },
   "eslintConfig": {
