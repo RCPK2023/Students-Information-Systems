@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, Modal, Select, TextField, Typography, MenuItem} from '@mui/material';
 
 function ViewStudent() {
 
@@ -64,28 +64,12 @@ function ViewStudent() {
       }
     }
 
-    // const handleOpen = (studentId) => {
-    //   const studentToEdit = Students.find(student => student.IdNumber === studentId);
-    
-    //   if (studentToEdit) {
-    //     const editedStudent = { ...studentToEdit, id: studentId };
-    //     setEditableStudent(editedStudent);
-    //     setSelectedStudent(studentId);
-    //     setOpen(true);
-    //   } else {
-    //     console.error('Selected student data not found');
-    //   }
-     
-    // }
-    
- 
-
   const handleClose = () => setOpen(false);
 
   const saveEditedStudent = () => {
  
-    if (!editableStudent || !editableStudent.IdNumber) {
-      console.error('Editable student data is missing or invalid');
+    if (!editableStudent || !editableStudent.IdNumber || !editableStudent.FirstName || !editableStudent.LastName || !editableStudent.MiddleName || !editableStudent.Course) {
+      alert('Please fill out all required fields.');
       return;
     }
 
@@ -218,16 +202,24 @@ function ViewStudent() {
                       sx={styleButton}
                     /><br/>
 
-                    <TextField
-                      id="outlined-basic"
-                      label="Year"
-                      variant="outlined"
-                      type='number'
-                      value={editableStudent?.Year || ''}
+                    <FormControl>
+                      <InputLabel id="demo-simple-select-label">Year</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={editableStudent?.Year || ''}
+                        label="Year"
+                        sx={{width:'200px'}}
                       onChange={(e) => setEditableStudent(prevState => ({...prevState, Year: e.target.value}))}
-                      sx={styleButton}
-                    /><br/>
-
+                      >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                      </Select>
+                    </FormControl>
+                   
                     </Typography>
 
                     <Box>

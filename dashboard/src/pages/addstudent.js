@@ -18,14 +18,25 @@ function Addstudent() {
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [MiddleName, setMiddleName] = useState("");
-  const [Course, setCourse] = useState("");
+  const [Course, setCourse] = useState("")
   const [Year, setYear] = useState("");
 
-  //In the Add and Edit components make sensible fieldviews i.e
-  //Button validation
-  //Button should get minimum of 8 for ID and all textfields should be filled up, if not add the red part for warning 
+  const validateId = () => IdNumber.trim() !== '' && IdNumber.length === 8;
+  const validateFirstName = () => FirstName.trim() !== '';
+  const validateLastName = () => LastName.trim() !== '';
+  const validateMiddleName = () => MiddleName.trim() !== '';
+  const validateCourse = () => Course.trim() !== '';
+  const validateYear = () => Year !== '';
+
+  const [IdError, setIdError] = useState(false);
+  const [FirstNameError, setFirstNameError] = useState(false);
+  const [LastNameError, setLastNameError] = useState(false);
+  const [MiddleNameError, setMiddleNameError] = useState(false);
+  const [CourseError, setCourseError] = useState(false);
+  const [YearError, setYearError] = useState(false);
 
   async function handleAddStudent() {
+
     const studentData = {
       IdNumber,
       FirstName,
@@ -35,32 +46,49 @@ function Addstudent() {
       Year,
     };
 
-    try {
-      const response = await fetch("http://localhost:1337/addStudent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(studentData),
-      });
+    const isIdValid = validateId();
+    const isFirstNameValid = validateFirstName();
+    const isLastNameValid = validateLastName();
+    const isMiddleNameValid = validateMiddleName();
+    const isCourseValid = validateCourse();
+    const isYearValid = validateYear();
 
-      const result = await response.json();
-
-      if (result.success) {
-        setIdNumber("");
-        setFirstName("");
-        setLastName("");
-        setMiddleName("");
-        setCourse("");
-        setYear("");
-        alert(result.message);
-      } else {
-        alert("Failed to add student. Please try again.");
+    if (isIdValid && isFirstNameValid && isLastNameValid && isMiddleNameValid && isCourseValid && isYearValid) {
+      try {
+        const response = await fetch("http://localhost:1337/addStudent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(studentData),
+        });
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          setIdNumber("");
+          setFirstName("");
+          setLastName("");
+          setMiddleName("");
+          setCourse("");
+          setYear("");
+          alert(result.message);
+        } else {
+          alert("Failed to add student. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error adding student:", error);
+        alert("An error occurred. Please try again.");
       }
-    } catch (error) {
-      console.error("Error adding student:", error);
-      alert("An error occured. Please try again.");
+    } else {
+      if (!isIdValid) setIdError(true);
+      if (!isFirstNameValid) setFirstNameError(true);
+      if (!isLastNameValid) setLastNameError(true);
+      if (!isMiddleNameValid) setMiddleNameError(true);
+      if (!isCourseValid) setCourseError(true);
+      if (!isYearValid) setYearError(true);
     }
+  
   }
 
   const isLetter = (event) => {
@@ -86,6 +114,8 @@ function Addstudent() {
         {
           <div id="input-container">
             <TextField
+             error={IdError}
+             helperText={IdError ? 'ID must be 8 characters long' : ''}
               id="outlined-basic"
               label="ID Number"
               variant="outlined"
@@ -100,6 +130,8 @@ function Addstudent() {
               sx={{ width: "200px" }}
             />
             <TextField
+             error={FirstNameError}
+             helperText={FirstNameError ? 'First Name is required' : ''}
               id="outlined-basic"
               label="First Name"
               variant="outlined"
@@ -109,6 +141,8 @@ function Addstudent() {
               sx={{ width: "200px" }}
             />
             <TextField
+             error={LastNameError}
+             helperText={LastNameError ? 'Last Name is required' : ''}
               id="outlined-basic"
               label="Last Name"
               variant="outlined"
@@ -118,6 +152,8 @@ function Addstudent() {
               sx={{ width: "200px" }}
             />
             <TextField
+             error={MiddleNameError}
+             helperText={MiddleNameError ? 'Middle Name is required' : ''}
               id="outlined-basic"
               label="Middle Name"
               variant="outlined"
@@ -137,6 +173,8 @@ function Addstudent() {
             />
 
             <TextField
+             error={CourseError}
+             helperText={CourseError ? 'Course is required' : ''}
               id="outlined-basic"
               label="Course"
               variant="outlined"
@@ -153,6 +191,8 @@ function Addstudent() {
                 value={Year}
                 onChange={(e) => setYear(e.target.value)}
                 label="Year"
+                error={YearError}
+                helperText={YearError ? 'Year is required' : ''}
               >
                 <MenuItem value={1}>1</MenuItem>
                 <MenuItem value={2}>2</MenuItem>
