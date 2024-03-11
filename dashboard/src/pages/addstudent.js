@@ -8,10 +8,11 @@ import {
   InputLabel,
   FormControl
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "./sidebar";
 import "./addstudent.css";
 import { useState } from "react";
+import axios from "axios";
 
 function Addstudent() {
   const [IdNumber, setIdNumber] = useState("");
@@ -35,6 +36,37 @@ function Addstudent() {
   const [CourseError, setCourseError] = useState(false);
   const [YearError, setYearError] = useState(false);
 
+  const [Students, setStudents] = useState([]);
+  const [editableStudent, setEditableStudent] = useState();
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    axios.get("http://localhost:1337/viewStudents")
+      .then((response) => {
+        setStudents(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching student data:", error);
+      });
+  }, []);
+
+  const handleOpen = (studentId) => {
+    const studentToEdit = Students.find((student) => student.IdNumber === studentId);
+
+    if (studentToEdit) {
+      setEditableStudent(studentToEdit);
+      setSelectedStudent(studentId);
+      setOpen(true);
+    } else {
+      console.error("Selected student data not found");
+    }
+  };
+
+  const isExistingStudent = (id) => {
+    return Students.some((student) => student.IdNumber === id);
+  };
+
   async function handleAddStudent() {
 
     const studentData = {
@@ -52,6 +84,12 @@ function Addstudent() {
     const isMiddleNameValid = validateMiddleName();
     const isCourseValid = validateCourse();
     const isYearValid = validateYear();
+
+    if (isExistingStudent(IdNumber)) {
+      setIdError(true);
+      alert("Student with this ID already exists.");
+      return;
+    }
 
     if (isIdValid && isFirstNameValid && isLastNameValid && isMiddleNameValid && isCourseValid && isYearValid) {
       try {
@@ -115,7 +153,7 @@ function Addstudent() {
           <div id="input-container">
             <TextField
              error={IdError}
-             helperText={IdError ? 'ID must be 8 characters long' : ''}
+             helperText={IdError ? 'ID must be 8 characters long and is unique' : ''}
               id="outlined-basic"
               label="ID Number"
               variant="outlined"
