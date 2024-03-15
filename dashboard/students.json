@@ -22,5 +22,13 @@
     "MiddleName": "M",
     "Course": "ComSci",
     "Year": 3
+  },
+  {
+    "IdNumber": "11111111",
+    "FirstName": "Ted",
+    "LastName": "Bundy",
+    "MiddleName": "S",
+    "Course": "BSIT",
+    "Year": 3
   }
 ]
