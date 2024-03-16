@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const User = require("./models/user.model");
+const User = require("./user.model");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
-mongoose.connect("mongodb://localhost:27017/mydatabase", {
+mongoose.connect("mongodb://localhost:27017/Users", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -21,28 +21,11 @@ mongoose.connect("mongodb://localhost:27017/mydatabase", {
   console.error("Error connecting to MongoDB: ", error)
 });
 
-const db = mongoose.mongo.Connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
+const db = mongoose.connection;
 
-app.post("/AddStudent", (req, res) => {
-  const studentData = req.body;
-
-  let existingData = [];
-  try {
-    existingData = JSON.parse(fs.readFileSync("students.json"));
-  } catch (error) {}
-  existingData.push(studentData);
-  fs.writeFileSync("students.json", JSON.stringify(existingData, null, 2));
-
-  res.json({ success: true, message: "Student added Successfully!" });
-});
-const port = 1337;
-
-app.listen(port, () => {
-  console.log(`Server running on ${port}`);
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
 });
 
 app.get("/viewStudents", (req, res) => {
@@ -77,3 +60,42 @@ app.put("/updateStudent/:id", (req, res) => {
     .status(200)
     .json({ success: true, message: "Student data updated successfully" });
 });
+
+app.post("/AddStudent", (req, res) => {
+  const studentData = req.body;
+
+  let existingData = [];
+  try {
+    existingData = JSON.parse(fs.readFileSync("students.json"));
+  } catch (error) {}
+  existingData.push(studentData);
+  fs.writeFileSync("students.json", JSON.stringify(existingData, null, 2));
+
+  res.json({ success: true, message: "Student added Successfully!" });
+});
+
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+})
+
+app.post("/api/users", async (req, res) => {
+  try {
+    const userData = req.body;
+    const newUser = new User(userData);
+    await newUser.save();
+  } catch (error) {
+    console.error("Error adding user:", error)
+  }
+})
+
+const port = 1337;
+
+app.listen(port, () => {
+  console.log(`Server running on ${port}`);
+});
+

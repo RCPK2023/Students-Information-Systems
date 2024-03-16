@@ -28,6 +28,11 @@ function ViewUsers() {
   const handleClose = () => setOpen(false);
   const [users, setUsers] = useState([]);
 
+  const [FirstName, setFirstName] = useState("");
+  const [LastName, setLastName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+
   const isLetter = (event) => {
     const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;
     return LETTERS_ONLY_REGEX.test(event.key);
@@ -50,13 +55,32 @@ function ViewUsers() {
     p: 4,
   };
 
+  useEffect(() =>{
+    axios
+    .get('http://localhost:1337/api/users')
+    .then((response) =>{
+      setUsers(response.data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data", error);
+    })
+  })
 
-  useEffect(() => {
-    fetch('/api/users') 
-      .then(res => res.json())
-      .then(data => setUsers(data))
-      .catch(error => console.error('Error fetching users:', error));
-  }, []);
+  const handleAddUser = async () => {
+    const UserData = {
+      firstName: FirstName,
+      lastName: LastName,
+      email: Email,
+      password: Password,
+    };
+
+    try {
+      await axios.post('http://localhost:1337/api/users', UserData);
+      console.log("User added successfully");
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  };
 
   return (
     <div id="viewUser-Container">
@@ -74,7 +98,9 @@ function ViewUsers() {
               id="outlined-basic"
               label="First Name"
               variant="outlined"
+              value={FirstName}
               onKeyDown={handleKeyDown}
+              onChange={(e) => setFirstName(e.target.value)}
             />
             <br />
 
@@ -82,7 +108,9 @@ function ViewUsers() {
               id="outlined-basic"
               label="Last Name"
               variant="outlined"
+              value={LastName}
               onKeyDown={handleKeyDown}
+              onChange={(e) => setLastName(e.target.value)}
             />
             <br />
 
@@ -90,19 +118,30 @@ function ViewUsers() {
               id="outlined-basic"
               label="Email"
               variant="outlined"
-              onKeyDown={handleKeyDown}
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <br />
 
             <TextField
               id="outlined-basic"
               label="Password"
-              type="password"
               variant="outlined"
+              value={Password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <br />
 
-            <Button onClick={handleClose}></Button>
+
+            <Button onClick={handleAddUser} variant="contained">
+              Add User
+              </Button> 
+
+            <Button onClick={handleClose} variant="contained">
+              Close
+              </Button> 
+
+
           </Box>
         </Modal>
 
@@ -114,23 +153,22 @@ function ViewUsers() {
                 <TableCell align="right">Last Name</TableCell>
                 <TableCell align="right">Email</TableCell>
                 <TableCell align="right">Password</TableCell>
-                <TableCell align="right">Type</TableCell>
               </TableRow>
             </TableHead>
-            {/* <TableBody>
+            <TableBody>
               {users.map((user) => (
               <TableRow
                 key={user.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell align="right">{user.FirstName}</TableCell>
+                <TableCell align="right">{user.firstName}</TableCell>
                 <TableCell align="right">{user.lastName}</TableCell>
                 <TableCell align="right">{user.email}</TableCell>
                 <TableCell align="right">{user.password}</TableCell>
 
               </TableRow>
             ))}
-            </TableBody> */}
+            </TableBody>
           </Table>
         </TableContainer>
       </Container>
