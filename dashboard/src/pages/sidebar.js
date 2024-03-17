@@ -2,6 +2,10 @@ import { Box, Container, Typography, Button } from "@mui/material";
 import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PeopleIcon from '@mui/icons-material/People';
+
 import "./sidebar.css";
 
 const sidebar = () => {
@@ -23,7 +27,7 @@ const sidebar = () => {
           <Button
             href="/addstudent"
             variant="text"
-            startIcon={<ErrorOutlineIcon />}
+            startIcon={<PersonAddIcon />}
             id="sidebar-button"
           >
             Add Student
@@ -34,7 +38,7 @@ const sidebar = () => {
           <Button
             href="/viewstudent"
             variant="text"
-            startIcon={<ErrorOutlineIcon />}
+            startIcon={<AccountCircleIcon />}
             id="sidebar-button"
           >
             View Students
@@ -45,7 +49,7 @@ const sidebar = () => {
           <Button
             href="/ViewUsers"
             variant="text"
-            startIcon={<ErrorOutlineIcon />}
+            startIcon={<PeopleIcon/>}
             id="sidebar-button"
           >
             View Users

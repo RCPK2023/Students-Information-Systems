@@ -44,22 +44,37 @@ function ViewUsers() {
     }
   };
 
+  const textFieldStyle = {
+    marginBottom: "20px"
+  };
+
+  const buttonStyle = {
+    marginRight: "20px"
+  };
+
+  const containerStyle = {
+    margin: "2"
+  };
+
   const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 300,
+    width: 250,
     bgcolor: "background.paper",
     boxShadow: 1,
     p: 4,
   };
 
   useEffect(() =>{
+    
     axios
     .get('http://localhost:1337/api/users')
     .then((response) =>{
       setUsers(response.data);
+
+      
     })
     .catch((error) => {
       console.error("Error fetching data", error);
@@ -75,10 +90,17 @@ function ViewUsers() {
     };
 
     try {
-      await axios.post('http://localhost:1337/api/users', UserData);
-      console.log("User added successfully");
+      const response = await axios.post('http://localhost:1337/api/users', UserData);
+
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        alert("User added successfully");
+
     } catch (error) {
       console.error("Error adding user:", error);
+      alert("An error occurred. Please try again.");
     }
   };
 
@@ -86,8 +108,12 @@ function ViewUsers() {
     <div id="viewUser-Container">
       <Sidebar></Sidebar>
 
-      <Container>
+      <Container sx={containerStyle}>
+
+        <Box sx={{marginTop: "20px", marginBottom: "20px"}}>
         <Typography variant="h3">Add Users</Typography>
+        </Box>
+        
 
         <Button variant="contained" onClick={handleOpen}>
           Add User
@@ -98,6 +124,7 @@ function ViewUsers() {
               id="outlined-basic"
               label="First Name"
               variant="outlined"
+              style={textFieldStyle}
               value={FirstName}
               onKeyDown={handleKeyDown}
               onChange={(e) => setFirstName(e.target.value)}
@@ -109,6 +136,7 @@ function ViewUsers() {
               label="Last Name"
               variant="outlined"
               value={LastName}
+              style={textFieldStyle}
               onKeyDown={handleKeyDown}
               onChange={(e) => setLastName(e.target.value)}
             />
@@ -119,6 +147,7 @@ function ViewUsers() {
               label="Email"
               variant="outlined"
               value={Email}
+              style={textFieldStyle}
               onChange={(e) => setEmail(e.target.value)}
             />
             <br />
@@ -128,24 +157,28 @@ function ViewUsers() {
               label="Password"
               variant="outlined"
               value={Password}
+              style={textFieldStyle}
               onChange={(e) => setPassword(e.target.value)}
             />
             <br />
 
 
-            <Button onClick={handleAddUser} variant="contained">
+            <Button 
+            onClick={handleAddUser} 
+            variant="contained"
+            style={buttonStyle}>
               Add User
               </Button> 
 
             <Button onClick={handleClose} variant="contained">
               Close
-              </Button> 
+            </Button> 
 
 
           </Box>
         </Modal>
 
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{marginTop: "20px"}}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
