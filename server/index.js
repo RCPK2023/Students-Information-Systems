@@ -93,6 +93,26 @@ app.post("/api/users", async (req, res) => {
   }
 })
 
+app.put("/api/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  const updatedUserData = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedUserData, { new: true})
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUser); 
+
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+});
+
 const port = 1337;
 
 app.listen(port, () => {

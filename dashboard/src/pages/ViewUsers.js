@@ -24,9 +24,16 @@ import axios from "axios";
 
 function ViewUsers() {
   const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleEditOpen = () => setOpenEdit(true);
+  const handleEditClose = () => setOpenEdit(false);
+
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [editableUser, setEditableUser] = useState();
 
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
@@ -45,15 +52,15 @@ function ViewUsers() {
   };
 
   const textFieldStyle = {
-    marginBottom: "20px"
+    marginBottom: "20px",
   };
 
   const buttonStyle = {
-    marginRight: "20px"
+    marginRight: "20px",
   };
 
   const containerStyle = {
-    margin: "2"
+    margin: "2",
   };
 
   const style = {
@@ -67,19 +74,63 @@ function ViewUsers() {
     p: 4,
   };
 
-  useEffect(() =>{
-    
-    axios
-    .get('http://localhost:1337/api/users')
-    .then((response) =>{
-      setUsers(response.data);
+  const styleEdit = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 250,
+    bgcolor: "background.paper",
+    boxShadow: 1,
+    p: 4,
+  };
 
+  const handleEditUser = (userID) => {
+
+    const userToEdit = users.find(user => user._id === userID)
+
+    if (userToEdit) {
+      setEditableUser(userToEdit);
+      setSelectedUser(userID);
+      setOpenEdit(true);
+    } else{
+      console.error("Selected user data not found");
+    }
+  }
+
+  const saveEditedUser = () => {
+    try {
+
+      const userID = editableUser._id;
       
-    })
-    .catch((error) => {
-      console.error("Error fetching data", error);
-    })
-  })
+      axios.put(`http://localhost:1337/api/users/${userID}`, editableUser)
+      console.log("User updated successfully: ")
+      setEditableUser(null);
+      setOpenEdit(false);
+
+      axios
+      .get("http://localhost:1337/api/users")
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+
+    } catch (error) {
+      console.error("Error updating users", error)
+    }
+  }
+  useEffect(() => {
+    axios
+      .get("http://localhost:1337/api/users")
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+  });
 
   const handleAddUser = async () => {
     const UserData = {
@@ -88,16 +139,18 @@ function ViewUsers() {
       email: Email,
       password: Password,
     };
-
+   
     try {
-      const response = await axios.post('http://localhost:1337/api/users', UserData);
+      const response = await axios.post(
+        "http://localhost:1337/api/users",
+        UserData
+      );
 
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setPassword("");
-        alert("User added successfully");
-
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      alert("User added successfully");
     } catch (error) {
       console.error("Error adding user:", error);
       alert("An error occurred. Please try again.");
@@ -109,11 +162,9 @@ function ViewUsers() {
       <Sidebar></Sidebar>
 
       <Container sx={containerStyle}>
-
-        <Box sx={{marginTop: "20px", marginBottom: "20px"}}>
-        <Typography variant="h3">Add Users</Typography>
+        <Box sx={{ marginTop: "20px", marginBottom: "20px" }}>
+          <Typography variant="h3">Add Users</Typography>
         </Box>
-        
 
         <Button variant="contained" onClick={handleOpen}>
           Add User
@@ -162,23 +213,21 @@ function ViewUsers() {
             />
             <br />
 
-
-            <Button 
-            onClick={handleAddUser} 
-            variant="contained"
-            style={buttonStyle}>
+            <Button
+              onClick={handleAddUser}
+              variant="contained"
+              style={buttonStyle}
+            >
               Add User
-              </Button> 
+            </Button>
 
             <Button onClick={handleClose} variant="contained">
               Close
-            </Button> 
-
-
+            </Button>
           </Box>
         </Modal>
 
-        <TableContainer component={Paper} sx={{marginTop: "20px"}}>
+        <TableContainer component={Paper} sx={{ marginTop: "20px" }}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -190,17 +239,101 @@ function ViewUsers() {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-              <TableRow
-                key={user.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell align="right">{user.firstName}</TableCell>
-                <TableCell align="right">{user.lastName}</TableCell>
-                <TableCell align="right">{user.email}</TableCell>
-                <TableCell align="right">{user.password}</TableCell>
+                <TableRow
+                  key={user._id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell align="right">{user.firstName}</TableCell>
+                  <TableCell align="right">{user.lastName}</TableCell>
+                  <TableCell align="right">{user.email}</TableCell>
+                  <TableCell align="right">{user.password}</TableCell>
+                  <TableCell>
+                    <Button
+                      align="right"
+                      variant="contained"
+                      onClick={() => handleEditUser(user._id)}
+                    >
+                      EDIT
+                    </Button>
+                    <Modal
+                      open={openEdit && selectedUser === user._id}
+                      onClose={handleEditClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
+                    >
+                      <Box sx={styleEdit}>
+                        <Typography
+                          id="modal-modal-title"
+                          variant="h6"
+                          component="h2"
+                        >
+                          User Information
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                          <TextField
+                            id="outlined-basic"
+                            label="First Name"
+                            variant="outlined"
+                            style={textFieldStyle}
+                            value={editableUser?.firstName || ''}
+                            onKeyDown={handleKeyDown}
+                            onChange={(e) => setEditableUser(prevState => ({...prevState, firstName: e.target.value}))}
+                          />
+                          <br />
 
-              </TableRow>
-            ))}
+                          <TextField
+                            id="outlined-basic"
+                            label="Last Name"
+                            variant="outlined"
+                            value={editableUser?.lastName || ''}
+                            style={textFieldStyle}
+                            onKeyDown={handleKeyDown}
+                            onChange={(e) => setEditableUser(prevState => ({...prevState, lastName: e.target.value}))}
+                          />
+                          <br />
+
+                          <TextField
+                            id="outlined-basic"
+                            label="Email"
+                            variant="outlined"
+                            value={editableUser?.email || ''}
+                            style={textFieldStyle}
+                            onChange={(e) => setEditableUser(prevState => ({...prevState, email: e.target.value}))}
+                          />
+                          <br />
+
+                          <TextField
+                            id="outlined-basic"
+                            label="Password"
+                            variant="outlined"
+                            value={editableUser?.password || ''}
+                            style={textFieldStyle}
+                            onChange={(e) => setEditableUser(prevState => ({...prevState, password: e.target.value}))}
+                          />
+                          <br />
+                        </Typography>
+
+                        <Box>
+                          <Button
+                            variant="contained"
+                            onClick={saveEditedUser}
+                            sx={{ width: "100px", marginRight: "5px" }}
+                          >
+                            SAVE
+                          </Button>
+                          <Button
+                            variant="contained"
+                            onClick={handleEditClose}
+                            sx={{ width: "100px" }}
+                          >
+                            CLOSE
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Modal>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
