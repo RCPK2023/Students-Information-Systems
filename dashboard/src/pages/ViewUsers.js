@@ -22,6 +22,7 @@ import {
 import "./ViewUsers.css";
 import axios from "axios";
 
+
 function ViewUsers() {
   const [open, setOpen] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -37,8 +38,17 @@ function ViewUsers() {
 
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
+  const [MiddleName, setMiddleName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const isLetter = (event) => {
     const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;
@@ -86,41 +96,38 @@ function ViewUsers() {
   };
 
   const handleEditUser = (userID) => {
-
-    const userToEdit = users.find(user => user._id === userID)
+    const userToEdit = users.find((user) => user._id === userID);
 
     if (userToEdit) {
       setEditableUser(userToEdit);
       setSelectedUser(userID);
       setOpenEdit(true);
-    } else{
+    } else {
       console.error("Selected user data not found");
     }
-  }
+  };
 
   const saveEditedUser = () => {
     try {
-
       const userID = editableUser._id;
-      
-      axios.put(`http://localhost:1337/api/users/${userID}`, editableUser)
-      console.log("User updated successfully: ")
+
+      axios.put(`http://localhost:1337/api/users/${userID}`, editableUser);
+      console.log("User updated successfully: ");
       setEditableUser(null);
       setOpenEdit(false);
 
       axios
-      .get("http://localhost:1337/api/users")
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data", error);
-      });
-
+        .get("http://localhost:1337/api/users")
+        .then((response) => {
+          setUsers(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching data", error);
+        });
     } catch (error) {
-      console.error("Error updating users", error)
+      console.error("Error updating users", error);
     }
-  }
+  };
   useEffect(() => {
     axios
       .get("http://localhost:1337/api/users")
@@ -136,10 +143,11 @@ function ViewUsers() {
     const UserData = {
       firstName: FirstName,
       lastName: LastName,
+      middleName: MiddleName,
       email: Email,
       password: Password,
     };
-   
+
     try {
       const response = await axios.post(
         "http://localhost:1337/api/users",
@@ -148,6 +156,7 @@ function ViewUsers() {
 
       setFirstName("");
       setLastName("");
+      setMiddleName("");
       setEmail("");
       setPassword("");
       alert("User added successfully");
@@ -195,6 +204,16 @@ function ViewUsers() {
 
             <TextField
               id="outlined-basic"
+              label="Middle Name"
+              variant="outlined"
+              value={MiddleName}
+              style={textFieldStyle}
+              onChange={(e) => setMiddleName(e.target.value)}
+            />
+            <br />
+
+            <TextField
+              id="outlined-basic"
               label="Email"
               variant="outlined"
               value={Email}
@@ -212,6 +231,7 @@ function ViewUsers() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <br />
+
 
             <Button
               onClick={handleAddUser}
@@ -233,8 +253,8 @@ function ViewUsers() {
               <TableRow>
                 <TableCell align="right">First Name</TableCell>
                 <TableCell align="right">Last Name</TableCell>
+                <TableCell align="right">Middle Name</TableCell>
                 <TableCell align="right">Email</TableCell>
-                <TableCell align="right">Password</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -245,8 +265,8 @@ function ViewUsers() {
                 >
                   <TableCell align="right">{user.firstName}</TableCell>
                   <TableCell align="right">{user.lastName}</TableCell>
+                  <TableCell align="right">{user.middleName}</TableCell>
                   <TableCell align="right">{user.email}</TableCell>
-                  <TableCell align="right">{user.password}</TableCell>
                   <TableCell>
                     <Button
                       align="right"
@@ -275,9 +295,14 @@ function ViewUsers() {
                             label="First Name"
                             variant="outlined"
                             style={textFieldStyle}
-                            value={editableUser?.firstName || ''}
+                            value={editableUser?.firstName || ""}
                             onKeyDown={handleKeyDown}
-                            onChange={(e) => setEditableUser(prevState => ({...prevState, firstName: e.target.value}))}
+                            onChange={(e) =>
+                              setEditableUser((prevState) => ({
+                                ...prevState,
+                                firstName: e.target.value,
+                              }))
+                            }
                           />
                           <br />
 
@@ -285,10 +310,25 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Last Name"
                             variant="outlined"
-                            value={editableUser?.lastName || ''}
+                            value={editableUser?.lastName || ""}
                             style={textFieldStyle}
                             onKeyDown={handleKeyDown}
-                            onChange={(e) => setEditableUser(prevState => ({...prevState, lastName: e.target.value}))}
+                            onChange={(e) =>
+                              setEditableUser((prevState) => ({
+                                ...prevState,
+                                lastName: e.target.value,
+                              }))
+                            }
+                          />
+                          <br />
+
+                          <TextField
+                            id="outlined-basic"
+                            label="Middle Name"
+                            variant="outlined"
+                            value={MiddleName}
+                            style={textFieldStyle}
+                            onChange={(e) => setMiddleName(e.target.value)}
                           />
                           <br />
 
@@ -296,9 +336,14 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Email"
                             variant="outlined"
-                            value={editableUser?.email || ''}
+                            value={editableUser?.email || ""}
                             style={textFieldStyle}
-                            onChange={(e) => setEditableUser(prevState => ({...prevState, email: e.target.value}))}
+                            onChange={(e) =>
+                              setEditableUser((prevState) => ({
+                                ...prevState,
+                                email: e.target.value,
+                              }))
+                            }
                           />
                           <br />
 
@@ -306,9 +351,14 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Password"
                             variant="outlined"
-                            value={editableUser?.password || ''}
+                            value={editableUser?.password || ""}
                             style={textFieldStyle}
-                            onChange={(e) => setEditableUser(prevState => ({...prevState, password: e.target.value}))}
+                            onChange={(e) =>
+                              setEditableUser((prevState) => ({
+                                ...prevState,
+                                password: e.target.value,
+                              }))
+                            }
                           />
                           <br />
                         </Typography>
