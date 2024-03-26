@@ -88,6 +88,8 @@ app.post("/api/users", async (req, res) => {
     const userData = req.body;
     const newUser = new User(userData);
     await newUser.save();
+
+    res.json({ success: true});
   } catch (error) {
     console.error("Error adding user:", error)
   }

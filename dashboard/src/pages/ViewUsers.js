@@ -28,10 +28,18 @@ function ViewUsers() {
   const [openEdit, setOpenEdit] = React.useState(false);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setFirstName("");
+  setLastName("");
+  setMiddleName("");
+  setEmail("");
+  setPassword("");
+  }
   const handleEditOpen = () => setOpenEdit(true);
   const handleEditClose = () => setOpenEdit(false);
 
+  
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [editableUser, setEditableUser] = useState();
@@ -154,12 +162,14 @@ function ViewUsers() {
         UserData
       );
 
-      setFirstName("");
-      setLastName("");
-      setMiddleName("");
-      setEmail("");
-      setPassword("");
-      alert("User added successfully");
+      if (response.data.success) {
+        setFirstName("");
+        setLastName("");
+        setMiddleName("");
+        setEmail("");
+        setPassword("");
+        alert("User added successfully");
+      }
     } catch (error) {
       console.error("Error adding user:", error);
       alert("An error occurred. Please try again.");
