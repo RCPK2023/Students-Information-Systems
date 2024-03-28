@@ -18,10 +18,15 @@ import {
   TableRow,
   TextField,
   Typography,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+
 import "./ViewUsers.css";
 import axios from "axios";
-
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function ViewUsers() {
   const [open, setOpen] = React.useState(false);
@@ -31,15 +36,14 @@ function ViewUsers() {
   const handleClose = () => {
     setOpen(false);
     setFirstName("");
-  setLastName("");
-  setMiddleName("");
-  setEmail("");
-  setPassword("");
-  }
+    setLastName("");
+    setMiddleName("");
+    setEmail("");
+    setPassword("");
+  };
   const handleEditOpen = () => setOpenEdit(true);
   const handleEditClose = () => setOpenEdit(false);
 
-  
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [editableUser, setEditableUser] = useState();
@@ -232,16 +236,39 @@ function ViewUsers() {
             />
             <br />
 
-            <TextField
-              id="outlined-basic"
-              label="Password"
+            <FormControl
+              sx={{
+                m: 1,
+                width: "25ch",
+                marginLeft: "0",
+                marginTop: "0",
+                marginBottom: "25px",
+              }}
               variant="outlined"
-              value={Password}
-              style={textFieldStyle}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <br />
-
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={showPassword ? "text" : "password"}
+                value={Password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
 
             <Button
               onClick={handleAddUser}
@@ -336,9 +363,14 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Middle Name"
                             variant="outlined"
-                            value={MiddleName}
+                            value={editableUser?.middleName || ""}
                             style={textFieldStyle}
-                            onChange={(e) => setMiddleName(e.target.value)}
+                            onChange={(e) =>
+                              setEditableUser((prevState) => ({
+                                ...prevState,
+                                middleName: e.target.value,
+                              }))
+                            }
                           />
                           <br />
 
@@ -357,7 +389,49 @@ function ViewUsers() {
                           />
                           <br />
 
-                          <TextField
+                          <FormControl
+                            sx={{
+                              m: 1,
+                              width: "25ch",
+                              marginLeft: "0",
+                              marginTop: "0",
+                              marginBottom: "25px",
+                            }}
+                            variant="outlined"
+                          >
+                            <InputLabel htmlFor="outlined-adornment-password">
+                              Password
+                            </InputLabel>
+                            <OutlinedInput
+                              id="outlined-adornment-password"
+                              type={showPassword ? "text" : "password"}
+                              value={editableUser?.password || ""}
+                              onChange={(e) =>
+                                setEditableUser((prevState) => ({
+                                  ...prevState,
+                                  password: e.target.value,
+                                }))}
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                  >
+                                    {showPassword ? (
+                                      <VisibilityOff />
+                                    ) : (
+                                      <Visibility />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              }
+                              label="Password"
+                            />
+                          </FormControl>
+
+                          {/* <TextField
                             id="outlined-basic"
                             label="Password"
                             variant="outlined"
@@ -369,7 +443,7 @@ function ViewUsers() {
                                 password: e.target.value,
                               }))
                             }
-                          />
+                          /> */}
                           <br />
                         </Typography>
 
