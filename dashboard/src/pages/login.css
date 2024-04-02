@@ -1,0 +1,21 @@
+#login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 70px 45px 70px 45px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Example shadow */
+}
+
+
+#login-page{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    gap: 30px;
+    background-color: rgb(250, 254, 255);
+}

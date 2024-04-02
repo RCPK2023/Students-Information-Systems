@@ -5,7 +5,7 @@ import Addstudent from "./pages/addstudent";
 import Demo from "./pages/Demo";
 import ViewStudent from "./pages/viewstudent";
 import ViewUsers from "./pages/ViewUsers";
-
+import Login from "./pages/login"
 const App = () => {
   return (
     <div>
@@ -16,6 +16,7 @@ const App = () => {
           <Route path="/Demo" element={<Demo />}></Route>
           <Route path="viewstudent" element={<ViewStudent />}></Route>
           <Route path="/viewusers" element={<ViewUsers />}></Route>
+          <Route path="/Login" element={<Login />}></Route>
         </Routes>
       </BrowserRouter>
     </div>
