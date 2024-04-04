@@ -13,12 +13,16 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./login.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-//create useState and hook into both the stuff, then put it as a website storage or something then do something 
-//that something being an authentication, maybe a session token?
+
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const navigate = useNavigate();
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -26,8 +30,23 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleInput = () => {
-    alert("Email: " + email + "\nPassword: " + password)
+  const handleInput = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:1337/api/users/login", {email, password});
+
+      if(response.data.message){
+        alert("Login successful!");
+        localStorage.setItem('email', email);
+        localStorage.setItem('password', password);
+        navigate('/');
+      }
+      
+    
+    } catch (error) {
+      console.error(error.response);
+    }
   }
 
   const textFieldStyle = {
