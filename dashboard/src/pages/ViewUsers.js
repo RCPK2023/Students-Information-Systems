@@ -156,7 +156,7 @@ function ViewUsers() {
       firstName: FirstName,
       lastName: LastName,
       middleName: MiddleName,
-      email: Email,
+      email: Email.toLowerCase,
       password: Password,
     };
 

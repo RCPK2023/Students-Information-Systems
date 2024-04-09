@@ -10,9 +10,8 @@ import axios from "axios";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
 
-  const navigateToDashboard = useNavigate();
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('email');
@@ -29,26 +28,26 @@ const App = () => {
             console.log("Login successful");
             setIsLoggedIn(true);
             
-               navigateToDashboard('/');
+         
             
             
           }
         } catch (error) {
           console.error(error);
         } finally {
-          setLoading(false); // Set loading to false when login process completes
+          setLoading(false); 
         }
       };
       loginUser();
     } else {
-      setLoading(false); // If no stored email and password, set loading to false
+      setLoading(false); 
     }
   }, []);
 
   const ProtectedRoutes = () => {
     console.log("What is the value before: ", isLoggedIn);
     if (loading) {
-      return <div>Loading...</div>; // Render loading indicator while loading
+      return <div>Loading...</div>; 
     }
 
     console.log("What is the value : ", isLoggedIn);
