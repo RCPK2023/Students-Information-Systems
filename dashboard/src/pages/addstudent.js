@@ -43,7 +43,7 @@ function Addstudent() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:1337/viewStudents")
+      .get(`http://localhost:1337/api/students`)
       .then((response) => {
         setStudents(response.data);
       })
@@ -102,24 +102,16 @@ function Addstudent() {
       isYearValid
     ) {
       try {
-        const response = await fetch("http://localhost:1337/addStudent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(studentData),
-        });
+        const response = await axios.post(`http://localhost:1337/api/addStudents`, studentData)
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (response.data.success) {
           setIdNumber("");
           setFirstName("");
           setLastName("");
           setMiddleName("");
           setCourse("");
           setYear("");
-          alert(result.message);
+          alert(response.data.message);
         } else {
           alert("Failed to add student. Please try again.");
         }

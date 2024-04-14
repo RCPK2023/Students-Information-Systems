@@ -8,7 +8,7 @@ const Student = new Schema({
     Course: {type: String, required: true},
     Year: {type: String, required: true},
 },
-{ collection: "Student-data"});
+{ collection: "student-data"});
 
 const model = _model("StudentData", Student);
 
