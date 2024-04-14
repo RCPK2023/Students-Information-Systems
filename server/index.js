@@ -74,6 +74,8 @@ app.post("/AddStudent", (req, res) => {
   res.json({ success: true, message: "Student added Successfully!" });
 });
 
+//Amongoose endpoints 
+
 app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -86,14 +88,24 @@ app.get("/api/users", async (req, res) => {
 app.post("/api/users", async (req, res) => {
   try {
     const userData = req.body;
+
+    const existingUser = await User.findOne({ email: userData.email });
+
+    if (existingUser) {
+      return res.status(400).json({ success: false, error: 'Email already exists' });
+    }
+
     const newUser = new User(userData);
     await newUser.save();
 
-    res.json({ success: true});
+    res.json({ success: true, message: 'User account created successfully' });
   } catch (error) {
-    console.error("Error adding user:", error)
+    console.error("Error adding user:", error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
   }
-})
+});
+
+
 
 app.put("/api/users/:id", async (req, res) => {
   const userId = req.params.id;
