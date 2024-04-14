@@ -6,6 +6,7 @@ import Demo from "./pages/Demo";
 import ViewStudent from "./pages/viewstudent";
 import ViewUsers from "./pages/ViewUsers";
 import Login from "./pages/login";
+import Signup from "./pages/signup";
 import axios from "axios";
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
 
 
   useEffect(() => {
+    setLoading(true);
     const storedEmail = localStorage.getItem('email');
     const storedPassword = localStorage.getItem('password');
 
@@ -65,6 +67,7 @@ const App = () => {
             <Route path="/viewusers" element={<ViewUsers />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup/>}/>
         </Routes>
       </BrowserRouter>
     </div>
