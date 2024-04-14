@@ -10,6 +10,7 @@ import {
   OutlinedInput,
   TextField,
   Typography,
+  Link
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./login.css";
@@ -105,6 +106,8 @@ const Login = () => {
         <Button variant="contained" onClick={handleInput}> 
             Login
         </Button>
+
+        <Link href="/signup">Don't have an account? Sign up!</Link>
       </div>
     </div>
   );
