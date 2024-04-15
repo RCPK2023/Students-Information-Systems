@@ -48,34 +48,31 @@ function ViewStudent() {
   const [Students, setStudents] = useState([]);
 
   useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:1337/api/viewStudents`
-        );
-
+    axios
+    .get('http://localhost:1337/viewStudents') 
+    .then((response) =>
+    {
         setStudents(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchStudent();
-  }, []);
+    })
+    .catch((error) => {
+        console.error("Error fetching student data:", error);
+    });       
+}, []);
 
   const handleOpen = (studentId) => {
-    const studentToEdit = Students.find(
-      (student) => student.IdNumber === studentId
-    );
+    const studentToEdit = Students.find(student => student.IdNumber === studentId);
 
     if (studentToEdit) {
       setEditableStudent(studentToEdit);
       setSelectedStudent(studentId);
       setOpen(true);
+
     } else {
-      console.error("Selected student data not found");
-    }
-  };
+      console.error('Selected student data not found');
+  }
+};
+
+
 
   const handleClose = () => setOpen(false);
 
@@ -92,39 +89,27 @@ function ViewStudent() {
       return;
     }
   
-    const studentId = editableStudent._id
+    const studentId = editableStudent.IdNumber;
+
+    axios.put(`http://localhost:1337/updateStudent/${studentId}`, editableStudent)
+      .then(response => {
+        console.log('Student updated successfully:', response.data);
+        setEditableStudent(null); 
   
-    try {
-      const response = await axios.put(
-        `http://localhost:1337/api/updateStudents/${studentId}`,
-        editableStudent
-      );
-  
-      if (response.data.success) {
-        console.log(
-          "Student updated successfully:",
-          response.data.studentData
-        );
-  
-        setEditableStudent(null);
         setOpen(false);
   
-        try {
-          const response = await axios.get(
-            `http://localhost:1337/api/viewStudents`
-          );
-  
+        axios.get('http://localhost:1337/viewStudents') 
+        .then((response) => {
           setStudents(response.data);
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        console.log("Student updated unsuccessfully:", response.data.success);
-      }
-    } catch (error) {
-      console.error("Error fetching updated student data:", error);
-    }
-  };
+        })
+        .catch((error) => {
+          console.error("Error fetching updated student data:", error);
+        });
+    })
+    .catch(error => {
+      console.error('Error updating student:', error);
+    });
+};
 
   const isLetter = (event) => {
     const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;

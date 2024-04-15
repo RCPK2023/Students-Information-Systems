@@ -30,5 +30,29 @@
     "MiddleName": "S",
     "Course": "BSIT",
     "Year": 3
+  },
+  {
+    "IdNumber": "22222222",
+    "FirstName": "Steve",
+    "LastName": "Minecraft",
+    "MiddleName": "S",
+    "Course": "BSIT",
+    "Year": 3
+  },
+  {
+    "IdNumber": "69696969",
+    "FirstName": "Michael",
+    "LastName": "Vsauce",
+    "MiddleName": "V",
+    "Course": "SAB",
+    "Year": 3
+  },
+  {
+    "IdNumber": "99999999",
+    "FirstName": "Gregory",
+    "LastName": "Michael",
+    "MiddleName": "S",
+    "Course": "SAB",
+    "Year": 4
   }
 ]
