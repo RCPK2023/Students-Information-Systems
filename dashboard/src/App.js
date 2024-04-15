@@ -8,6 +8,7 @@ import ViewUsers from "./pages/ViewUsers";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import axios from "axios";
+import ManageStudents from "./pages/ManageStudents";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,6 +66,7 @@ const App = () => {
             <Route path="/addstudent" element={<Addstudent />} />
             <Route path="/viewstudent" element={<ViewStudent />} />
             <Route path="/viewusers" element={<ViewUsers />} />
+            <Route path="/ManageStudents" element={<ManageStudents />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup/>}/>

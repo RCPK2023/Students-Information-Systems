@@ -55,6 +55,17 @@ const sidebar = () => {
             View Users
           </Button>
         </Box>
+
+        <Box>
+          <Button
+            href="/ManageStudents"
+            variant="text"
+            startIcon={<PeopleIcon/>}
+            id="sidebar-button"
+          >
+            Manage Students
+          </Button>
+        </Box>
       </Container>
     </div>
   );

@@ -153,6 +153,7 @@ app.post("/api/users/login", async (req, res) => {
 
 //New Students
 
+//Get student data
 app.get("/api/viewStudents", async (req, res) => {
   try {
     const students = await Students.find();
@@ -162,6 +163,7 @@ app.get("/api/viewStudents", async (req, res) => {
   }
 })
 
+//Add student data
 app.post("/api/addStudents", async (req, res) => {
   try {
     const studentsData = req.body;
@@ -182,7 +184,7 @@ app.post("/api/addStudents", async (req, res) => {
   }
 });
 
-
+//Update student data
 app.put("/api/updateStudents/:id", async (req, res) => {
   const studentsId = req.params.id;
   const updatedStudentData = req.body;

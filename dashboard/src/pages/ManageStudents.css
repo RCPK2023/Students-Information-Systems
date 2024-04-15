@@ -1,0 +1,12 @@
+#viewUser-Container{
+    display: flex;
+    flex-direction: row;
+}
+
+#input-container
+{
+  display:flex;
+  width:200px;
+  flex-direction:column;
+  gap: 15px;
+}
