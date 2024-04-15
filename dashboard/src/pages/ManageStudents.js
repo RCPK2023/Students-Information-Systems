@@ -55,6 +55,20 @@ function ViewUsers() {
   const [Course, setCourse] = useState("");
   const [Year, setYear] = useState("");
 
+  const [IdError, setIdError] = useState(false);
+  const [FirstNameError, setFirstNameError] = useState(false);
+  const [LastNameError, setLastNameError] = useState(false);
+  const [MiddleNameError, setMiddleNameError] = useState(false);
+  const [CourseError, setCourseError] = useState(false);
+  const [YearError, setYearError] = useState(false);
+
+  const validateId = () => IdNumber.trim() !== "" && IdNumber.length === 8;
+  const validateFirstName = () => FirstName.trim() !== "";
+  const validateLastName = () => LastName.trim() !== "";
+  const validateMiddleName = () => MiddleName.trim() !== "";
+  const validateCourse = () => Course.trim() !== "";
+  const validateYear = () => Year !== "";
+
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -63,6 +77,11 @@ function ViewUsers() {
     event.preventDefault();
   };
 
+  const styleButton = {
+    width: "200px",
+    marginBottom: "15px",
+  };
+  
   const isLetter = (event) => {
     const LETTERS_ONLY_REGEX = /^[a-zA-Z\s]+$/;
     return LETTERS_ONLY_REGEX.test(event.key);
@@ -108,9 +127,27 @@ function ViewUsers() {
     p: 4,
   };
 
-  const handleEditStudent = (studentID) => {
-    const studentToEdit = students.find((Students) => Students._id === studentID);
+  //Gets the students
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:1337/api/viewStudents`
+        );
+        console.log(response);
+        setStudents(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+    fetchStudent();
+  }, [students]);
+
+  const handleEditStudent = (studentID) => {
+  
+    const studentToEdit = students.find((Students) => Students._id === studentID);
+  
     if (studentToEdit) {
       setEditableStudent(studentToEdit);
       setSelectedStudent(studentID);
@@ -129,35 +166,11 @@ function ViewUsers() {
       setEditableStudent(null);
       setOpenEdit(false);
 
-      axios
-        .get("http://localhost:1337/api/viewStudents")
-        .then((response) => {
-          setStudents(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching data", error);
-        });
+      //add here
     } catch (error) {
       console.error("Error updating students", error);
     }
   };
-
-  //Gets the students
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:1337/api/viewStudents`
-        );
-
-        setStudents(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchStudent();
-  }, []);
 
   async function handleAddStudent() {
     const studentData = {
@@ -175,6 +188,10 @@ function ViewUsers() {
     const isMiddleNameValid = validateMiddleName();
     const isCourseValid = validateCourse();
     const isYearValid = validateYear();
+
+    const isExistingStudent = (id) => {
+      return students.some((student) => student.IdNumber === id);
+    };
 
     if (isExistingStudent(IdNumber)) {
       setIdError(true);
@@ -234,6 +251,10 @@ function ViewUsers() {
           <Box sx={style}>
 
           <TextField
+              error={IdError}
+              helperText={
+                IdError ? "ID must be 8 characters long and is unique" : ""
+              }
               id="outlined-basic"
               label="ID Number"
               variant="outlined"
@@ -245,50 +266,61 @@ function ViewUsers() {
                   .toString()
                   .slice(0, 8);
               }}
-              sx={{ width: "200px" }}
+              sx={styleButton}
             />
-
             <TextField
+              error={FirstNameError}
+              helperText={FirstNameError ? "First Name is required" : ""}
               id="outlined-basic"
               label="First Name"
               variant="outlined"
-              style={textFieldStyle}
               value={FirstName}
               onKeyDown={handleKeyDown}
               onChange={(e) => setFirstName(e.target.value)}
+              sx={styleButton}
             />
-            <br />
-
             <TextField
+              error={LastNameError}
+              helperText={LastNameError ? "Last Name is required" : ""}
               id="outlined-basic"
               label="Last Name"
               variant="outlined"
               value={LastName}
-              style={textFieldStyle}
               onKeyDown={handleKeyDown}
               onChange={(e) => setLastName(e.target.value)}
+              sx={styleButton}
             />
-            <br />
-
             <TextField
+              error={MiddleNameError}
+              helperText={MiddleNameError ? "Middle Name is required" : ""}
               id="outlined-basic"
               label="Middle Name"
               variant="outlined"
               value={MiddleName}
-              style={textFieldStyle}
-              onChange={(e) => setMiddleName(e.target.value)}
+              onChange={(e) =>
+                setMiddleName(e.target.value.slice(0, 1).toUpperCase())
+              }
+              onKeyDown={(e) => {
+                if (MiddleName.length >= 1 && e.key !== "Backspace") {
+                  e.preventDefault();
+                }
+                if (!/^[a-zA-Z]+$/.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              sx={styleButton}
             />
-            <br />
 
             <TextField
+              error={CourseError}
+              helperText={CourseError ? "Course is required" : ""}
               id="outlined-basic"
               label="Course"
               variant="outlined"
               value={Course}
-              style={textFieldStyle}
               onChange={(e) => setCourse(e.target.value)}
+              sx={styleButton}
             />
-            <br />
 
             <FormControl>
               <InputLabel id="demo-simple-select-label">Year</InputLabel>
@@ -298,6 +330,9 @@ function ViewUsers() {
                 value={Year}
                 onChange={(e) => setYear(e.target.value)}
                 label="Year"
+                sx={{ width: "200px" }}
+                error={YearError}
+                helperText={YearError ? "Year is required" : ""}
               >
                 <MenuItem value={1}>1</MenuItem>
                 <MenuItem value={2}>2</MenuItem>
@@ -306,6 +341,7 @@ function ViewUsers() {
                 <MenuItem value={5}>5</MenuItem>
               </Select>
             </FormControl>
+
 
             <Button
               onClick={handleAddStudent}
@@ -339,12 +375,12 @@ function ViewUsers() {
                   key={Students._id}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                <TableCell align="right">Student Id</TableCell>
-                <TableCell align="right">First Name</TableCell>
-                <TableCell align="right">Last Name</TableCell>
-                <TableCell align="right">Middle Name</TableCell>
-                <TableCell align="right">Course</TableCell>
-                <TableCell align="right">Year</TableCell>
+               <TableCell align="right">{Students.IdNumber}</TableCell>
+                  <TableCell align="right">{Students.FirstName}</TableCell>
+                  <TableCell align="right">{Students.LastName}</TableCell>
+                  <TableCell align="right">{Students.MiddleName}</TableCell>
+                  <TableCell align="right">{Students.Course}</TableCell>
+                  <TableCell align="right">{Students.Year}</TableCell>
                   <TableCell>
                     <Button
                       align="right"
@@ -370,33 +406,28 @@ function ViewUsers() {
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
 
                         <TextField
+                            disabled
                             id="outlined-basic"
-                            label="Student ID"
+                            label="ID Number"
                             variant="outlined"
-                            style={textFieldStyle}
-                            value={editableStudent?.IdNumber || ""}
-                            onKeyDown={handleKeyDown}
-                            onChange={(e) =>
-                              setEditableStudent((prevState) => ({
-                                ...prevState,
-                                IdNumber: e.target.value,
-                              }))
-                            }
+                            value={Students.IdNumber}
+                            sx={styleButton}
                           />
+                          <br />
 
-                          <TextField
+<TextField
                             id="outlined-basic"
                             label="First Name"
                             variant="outlined"
-                            style={textFieldStyle}
-                            value={editableStudent?.firstName || ""}
+                            value={editableStudent?.FirstName || ""}
                             onKeyDown={handleKeyDown}
                             onChange={(e) =>
                               setEditableStudent((prevState) => ({
                                 ...prevState,
-                                firstName: e.target.value,
+                                FirstName: e.target.value,
                               }))
                             }
+                            sx={styleButton}
                           />
                           <br />
 
@@ -404,15 +435,15 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Last Name"
                             variant="outlined"
-                            value={editableStudent?.lastName || ""}
-                            style={textFieldStyle}
+                            value={editableStudent?.LastName || ""}
                             onKeyDown={handleKeyDown}
                             onChange={(e) =>
                               setEditableStudent((prevState) => ({
                                 ...prevState,
-                                lastName: e.target.value,
+                                LastName: e.target.value,
                               }))
                             }
+                            sx={styleButton}
                           />
                           <br />
 
@@ -420,14 +451,25 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Middle Name"
                             variant="outlined"
-                            value={editableStudent?.middleName || ""}
-                            style={textFieldStyle}
+                            value={editableStudent?.MiddleName || ""}
                             onChange={(e) =>
                               setEditableStudent((prevState) => ({
                                 ...prevState,
-                                middleName: e.target.value,
+                                MiddleName: e.target.value,
                               }))
                             }
+                            onKeyDown={(e) => {
+                              if (
+                                editableStudent?.MiddleName.length >= 1 &&
+                                e.key !== "Backspace"
+                              ) {
+                                e.preventDefault();
+                              }
+                              if (!/^[a-zA-Z]+$/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                            sx={styleButton}
                           />
                           <br />
 
@@ -435,35 +477,41 @@ function ViewUsers() {
                             id="outlined-basic"
                             label="Course"
                             variant="outlined"
-                            value={editableStudent?.email || ""}
-                            style={textFieldStyle}
+                            value={editableStudent?.Course || ""}
                             onChange={(e) =>
                               setEditableStudent((prevState) => ({
                                 ...prevState,
-                                email: e.target.value,
+                                Course: e.target.value,
                               }))
                             }
+                            sx={styleButton}
                           />
                           <br />
 
                           <FormControl>
-              <InputLabel id="demo-simple-select-label">Year</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={Year}
-                onChange={(e) => setYear(e.target.value)}
-                label="Year"
-                error={YearError}
-                helperText={YearError ? "Year is required" : ""}
-              >
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={4}>4</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-              </Select>
-            </FormControl>
+                            <InputLabel id="demo-simple-select-label">
+                              Year
+                            </InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={editableStudent?.Year || ""}
+                              label="Year"
+                              sx={{ width: "200px" }}
+                              onChange={(e) =>
+                                setEditableStudent((prevState) => ({
+                                  ...prevState,
+                                  Year: e.target.value,
+                                }))
+                              }
+                            >
+                              <MenuItem value={1}>1</MenuItem>
+                              <MenuItem value={2}>2</MenuItem>
+                              <MenuItem value={3}>3</MenuItem>
+                              <MenuItem value={4}>4</MenuItem>
+                              <MenuItem value={5}>5</MenuItem>
+                            </Select>
+                          </FormControl>
 
                           <br />
                         </Typography>
