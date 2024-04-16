@@ -1,4 +1,4 @@
-import { Container, TextField, Button } from "@mui/material";
+import { Container, TextField, Button, Link } from "@mui/material";
 import React, { useState } from "react";
 import "./signup.css";
 import axios from "axios";
@@ -155,9 +155,14 @@ function Signup() {
           }}
         ></TextField>
 
-        <Button variant="contained" onClick={handleUserSignUp}>
+        <Button variant="contained" 
+        onClick={handleUserSignUp}
+        sx={{width: 150}}>
           Sign-Up!
         </Button>
+
+        <Link href="/login">Already have an account? Login!</Link>
+
       </div>
     </div>
   );

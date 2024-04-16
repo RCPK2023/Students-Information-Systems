@@ -8,6 +8,10 @@ import PeopleIcon from '@mui/icons-material/People';
 
 import "./sidebar.css";
 
+function clearCredentials(){
+  localStorage.clear();
+}
+
 const sidebar = () => {
   return (
     <div id="container">
@@ -65,6 +69,19 @@ const sidebar = () => {
           >
             Manage Students
           </Button>
+
+          <Button
+          onClick={() => clearCredentials()}
+
+            href="/login"
+            variant="text"
+            startIcon={<PeopleIcon/>}
+            id="sidebar-button"
+            
+          >
+            Log out
+          </Button>
+
         </Box>
       </Container>
     </div>

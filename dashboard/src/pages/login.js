@@ -1,7 +1,7 @@
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
-    Button,
+  Button,
   Container,
   FormControl,
   IconButton,
@@ -10,13 +10,12 @@ import {
   OutlinedInput,
   TextField,
   Typography,
-  Link
+  Link,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./login.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -35,20 +34,20 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:1337/api/users/login", {email, password});
-
-      if(response.data.message){
+      const response = await axios.post(
+        "http://localhost:1337/api/users/login",
+        { email, password }
+      );
+      if (response.data.message) {
         alert("Login successful!");
-        localStorage.setItem('email', email);
-        localStorage.setItem('password', password);
-        navigate('/');
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+        navigate("/");
       }
-      
-    
     } catch (error) {
       console.error(error.response);
     }
-  }
+  };
 
   const textFieldStyle = {
     marginBottom: "width: 250px",
@@ -102,12 +101,11 @@ const Login = () => {
           />
         </FormControl>
 
-        
-        <Button variant="contained" onClick={handleInput}> 
-            Login
+        <Button variant="contained" onClick={handleInput} sx={{ width: 100 }}>
+          Login
         </Button>
 
-        <Link href="/signup">Don't have an account? Sign up!</Link>
+        <Link href="/signup">Don't have an account? Sign up today!</Link>
       </div>
     </div>
   );

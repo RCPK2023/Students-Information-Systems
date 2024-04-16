@@ -1,60 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation, Outlet, useNavigate } from "react-router-dom";
+// App.js
+import React from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useNavigate,
+} from "react-router-dom";
 import Dashboard from "./pages/dashboard";
 import Addstudent from "./pages/addstudent";
-import Demo from "./pages/Demo";
 import ViewStudent from "./pages/viewstudent";
 import ViewUsers from "./pages/ViewUsers";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
-import axios from "axios";
 import ManageStudents from "./pages/ManageStudents";
+import { useAuth } from "./pages/auth"; // import the custom hook
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true); 
-
-
-  useEffect(() => {
-    setLoading(true);
-    const storedEmail = localStorage.getItem('email');
-    const storedPassword = localStorage.getItem('password');
-
-    if (storedEmail && storedPassword) {
-      const loginUser = async () => {
-        try {
-          const response = await axios.post("http://localhost:1337/api/users/login", {
-            email: storedEmail,
-            password: storedPassword
-          });
-          if (response.data.message) {
-            console.log("Login successful");
-            setIsLoggedIn(true);
-            
-         
-            
-            
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false); 
-        }
-      };
-      loginUser();
-    } else {
-      setLoading(false); 
-    }
-  }, []);
+  const { isLoggedIn, loading } = useAuth(); // use the custom hook
 
   const ProtectedRoutes = () => {
-    console.log("What is the value before: ", isLoggedIn);
+    const navigate = useNavigate();
     if (loading) {
-      return <div>Loading...</div>; 
+      return <div>Loading...</div>;
     }
 
-    console.log("What is the value : ", isLoggedIn);
-    return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+
+    return <Outlet />;
   };
 
   return (
@@ -69,7 +45,7 @@ const App = () => {
             <Route path="/ManageStudents" element={<ManageStudents />} />
           </Route>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </BrowserRouter>
     </div>
