@@ -1,23 +1,18 @@
-// useAuth.js
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export const useAuth = (navigate) => {
+export const useAuth = () => {
   const storedEmail = localStorage.getItem("email");
   const storedPassword = localStorage.getItem("password");
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    !!(storedEmail && storedPassword)
-  );
-  const [loading, setLoading] = useState(!(storedEmail && storedPassword));
+  const [isLoggedIn, setIsLoggedIn] = useState(!!(storedEmail && storedPassword));
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-
-    console.log(storedEmail, storedPassword);
-    if (storedEmail && storedPassword) {
-      const loginUser = async () => {
-        try {
+    const loginUser = async () => {
+      setLoading(true);
+      try {
+        if (storedEmail && storedPassword) {
           const response = await axios.post(
             "http://localhost:1337/api/users/login",
             {
@@ -26,22 +21,18 @@ export const useAuth = (navigate) => {
             }
           );
           if (response.data.message) {
-            console.log("Login successful");
-
             setIsLoggedIn(true);
-            navigate('/');
           }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
         }
-      };
-      loginUser();
-    } else {
-      setLoading(false);
-    }
-  }, [storedEmail, storedPassword, navigate]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loginUser();
+  }, [storedEmail, storedPassword]);
 
   return { isLoggedIn, loading };
 };

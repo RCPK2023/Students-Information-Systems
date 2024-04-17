@@ -15,23 +15,9 @@ import ViewUsers from "./pages/ViewUsers";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import ManageStudents from "./pages/ManageStudents";
-import { useAuth } from "./pages/auth"; // import the custom hook
+import ProtectedRoutes from "./pages/protectedroute";
 
 const App = () => {
-  const { isLoggedIn, loading } = useAuth(); // use the custom hook
-
-  const ProtectedRoutes = () => {
-    const navigate = useNavigate();
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-
-    if (!isLoggedIn) {
-      navigate('/login');
-    }
-
-    return <Outlet />;
-  };
 
   return (
     <div>

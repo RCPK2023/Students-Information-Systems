@@ -13,6 +13,7 @@ import Sidebar from "./sidebar";
 import "./addstudent.css";
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "./auth"; 
 
 function Addstudent() {
   const [IdNumber, setIdNumber] = useState("");
