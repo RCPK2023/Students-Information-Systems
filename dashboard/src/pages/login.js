@@ -38,11 +38,18 @@ const Login = () => {
         "http://localhost:1337/api/users/login",
         { email, password }
       );
-      if (response.data.message) {
+      if (response.data.message && response.data.userType === "User") {
         alert("Login successful!");
         localStorage.setItem("email", email);
         localStorage.setItem("password", password);
+        localStorage.setItem("type", "User");
         navigate("/");
+      }else if(response.data.message && response.data.userType === "Student"){
+        alert("Login successful!");
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", password);
+        localStorage.setItem("type", "Student");
+        navigate("/studentDashboard");
       }
     } catch (error) {
       console.error(error.response);
@@ -101,6 +108,7 @@ const Login = () => {
           />
         </FormControl>
 
+          {/* Check first if the textboxes are empty before proceeding */}
         <Button variant="contained" onClick={handleInput} sx={{ width: 100 }}>
           Login
         </Button>

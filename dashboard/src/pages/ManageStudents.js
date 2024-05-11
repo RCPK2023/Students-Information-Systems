@@ -32,14 +32,25 @@ function ViewUsers() {
   const [open, setOpen] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => setOpen(true );
   const handleClose = () => {
     setOpen(false);
+    setIdNumber("");
+    setPassword("");
     setFirstName("");
     setLastName("");
     setMiddleName("");
     setCourse("");
     setYear("");
+
+    setIdError(false);
+    setPasswordError(false);
+   setFirstNameError(false);
+   setLastNameError(false);
+   setMiddleNameError(false);
+   setCourseError(false);
+   setYearError(false);
+
   };
   const handleEditOpen = () => setOpenEdit(true);
   const handleEditClose = () => setOpenEdit(false);
@@ -54,6 +65,7 @@ function ViewUsers() {
   const [MiddleName, setMiddleName] = useState("");
   const [Course, setCourse] = useState("");
   const [Year, setYear] = useState("");
+  const [Password, setPassword] = useState("");
 
   const [IdError, setIdError] = useState(false);
   const [FirstNameError, setFirstNameError] = useState(false);
@@ -61,6 +73,7 @@ function ViewUsers() {
   const [MiddleNameError, setMiddleNameError] = useState(false);
   const [CourseError, setCourseError] = useState(false);
   const [YearError, setYearError] = useState(false);
+  const [PasswordError, setPasswordError] = useState(false);
 
   const validateId = () => IdNumber.trim() !== "" && IdNumber.length === 8;
   const validateFirstName = () => FirstName.trim() !== "";
@@ -68,6 +81,7 @@ function ViewUsers() {
   const validateMiddleName = () => MiddleName.trim() !== "";
   const validateCourse = () => Course.trim() !== "";
   const validateYear = () => Year !== "";
+  const validatePassword = () => Password !== "";
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -127,6 +141,9 @@ function ViewUsers() {
     p: 4,
   };
 
+  const styleInput = {
+    width: 200
+  }
   //Gets the students
   useEffect(() => {
     const fetchStudent = async () => {
@@ -175,6 +192,7 @@ function ViewUsers() {
   async function handleAddStudent() {
     const studentData = {
       IdNumber,
+      Password,
       FirstName,
       LastName,
       MiddleName,
@@ -183,11 +201,13 @@ function ViewUsers() {
     };
 
     const isIdValid = validateId();
+    const isPasswordValid = validatePassword();
     const isFirstNameValid = validateFirstName();
     const isLastNameValid = validateLastName();
     const isMiddleNameValid = validateMiddleName();
     const isCourseValid = validateCourse();
     const isYearValid = validateYear();
+
 
     const isExistingStudent = (id) => {
       return students.some((student) => student.IdNumber === id);
@@ -201,11 +221,12 @@ function ViewUsers() {
 
     if (
       isIdValid &&
+      isPasswordValid &&
       isFirstNameValid &&
       isLastNameValid &&
       isMiddleNameValid &&
       isCourseValid &&
-      isYearValid
+      isYearValid 
     ) {
       try {
         const response = await axios.post(`http://localhost:1337/api/addStudents`, studentData)
@@ -217,6 +238,7 @@ function ViewUsers() {
           setMiddleName("");
           setCourse("");
           setYear("");
+          setPassword("");
           alert(response.data.message);
         } else {
           alert("Failed to add student. Please try again.");
@@ -227,11 +249,13 @@ function ViewUsers() {
       }
     } else {
       if (!isIdValid) setIdError(true);
+      if (!isYearValid) setYearError(true);
+      if (!isPasswordValid) setPasswordError(true);
       if (!isFirstNameValid) setFirstNameError(true);
       if (!isLastNameValid) setLastNameError(true);
       if (!isMiddleNameValid) setMiddleNameError(true);
       if (!isCourseValid) setCourseError(true);
-      if (!isYearValid) setYearError(true);
+
     }
   }
 
@@ -268,6 +292,46 @@ function ViewUsers() {
               }}
               sx={styleButton}
             />
+
+            <FormControl
+              sx={{
+                m: 1,
+                width: "25ch",
+                marginLeft: "0",
+                marginTop: "0",
+                marginBottom: "25px",
+              }}
+              variant="outlined"
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                sx={styleInput}
+                type={showPassword ? "text" : "password"}
+                error={PasswordError}
+                helperText={
+                  PasswordError ? "Password is required" : ""
+                }
+                value={Password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+
             <TextField
               error={FirstNameError}
               helperText={FirstNameError ? "First Name is required" : ""}
@@ -415,7 +479,46 @@ function ViewUsers() {
                           />
                           <br />
 
-<TextField
+                          <FormControl
+              sx={{
+                m: 1,
+                width: "25ch",
+                marginLeft: "0",
+                marginTop: "0",
+                marginBottom: "25px",
+              }}
+              variant="outlined"
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                sx={styleInput}
+                type={showPassword ? "text" : "password"}
+                error={PasswordError}
+                helperText={
+                  PasswordError ? "Password is required" : ""
+                }
+                value={Students.Password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+
+                            <TextField
                             id="outlined-basic"
                             label="First Name"
                             variant="outlined"

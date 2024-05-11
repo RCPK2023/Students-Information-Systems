@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
-// Users connection
+// MARK: Users connection
 mongoose.connect("mongodb://localhost:27017/Users", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -30,7 +30,7 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-//Superannuated code
+//MARK: Superannuated code
 app.get("/viewStudents", (req, res) => {
   try {
     const studentData = JSON.parse(fs.readFileSync("students.json"));
@@ -77,8 +77,9 @@ app.post("/AddStudent", (req, res) => {
   res.json({ success: true, message: "Student added Successfully!" });
 });
 
-//Amongoose endpoints 
+//MARK: Amongoose endpoints 
 
+//MARK: VIEW USERS
 app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -88,6 +89,7 @@ app.get("/api/users", async (req, res) => {
   }
 })
 
+//MARK: ADD USERS
 app.post("/api/users", async (req, res) => {
   try {
     const userData = req.body;
@@ -109,7 +111,7 @@ app.post("/api/users", async (req, res) => {
 });
 
 
-
+//MARK: UPDATE USERS
 app.put("/api/users/:id", async (req, res) => {
   const userId = req.params.id;
   const updatedUserData = req.body;
@@ -130,30 +132,53 @@ app.put("/api/users/:id", async (req, res) => {
 
 });
 
+//MARK: LOGIN
 app.post("/api/users/login", async (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
 
-    if(!user){
-      return res.status(404).json({ message: 'User not found' });
+    let user = await User.findOne({ email });
+
+    if (user) {
+      if (user.password !== password) {
+        return res.status(401).json({ message: 'Incorrect password', userType: 'User' });
+      }
+
+      return res.status(200).json({ message: 'Login successful!', userType: 'User', user });
     }
 
-    if(user.password !== password){
-      return res.status(401).json({ message: 'Incorrect password' });
+    let IdNumber = email;
+
+    let student = await Students.findOne({ IdNumber });
+
+    if (student) {
+      if (student.Password !== password) {
+
+        return res.status(401).json({ 
+          message: 'Incorrect password', 
+          userType: 'Student' , 
+          studentPassword: student.Password, 
+          studentInputPassword: password 
+        });
+      }
+
+      return res.status(200).json({ message: 'Login successful!', userType: 'Student', student});
     }
 
-    res.status(200).json({ message: 'Login successful!', user});
+    res.status(404).json({ message: 'User not found in both Users and Students', userType: null});
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
-})
+});
 
-//New Students
 
-//Get student data
+
+//MARK: New Students
+
+//MARK: Get student data
 app.get("/api/viewStudents", async (req, res) => {
   try {
     const students = await Students.find();
@@ -163,7 +188,26 @@ app.get("/api/viewStudents", async (req, res) => {
   }
 })
 
-//Add student data
+//MARK: Get a single student data
+app.get('/api/getStudent', async (req, res) => {
+  const studentIdNumber = req.query.id;
+
+  try {
+    const student = await Students.findOne({ IdNumber: studentIdNumber }); 
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+    res.status(200).json(student);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+
+
+//MARK: Add student data
 app.post("/api/addStudents", async (req, res) => {
   try {
     const studentsData = req.body;
@@ -184,7 +228,7 @@ app.post("/api/addStudents", async (req, res) => {
   }
 });
 
-//Update student data
+//MARK: Update student data
 app.put("/api/updateStudents/:id", async (req, res) => {
   const studentsId = req.params.id;
   const updatedStudentData = req.body;

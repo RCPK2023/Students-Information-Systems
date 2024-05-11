@@ -7,7 +7,6 @@ export const useAuth = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!(storedEmail && storedPassword));
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     const loginUser = async () => {
       setLoading(true);
@@ -18,6 +17,7 @@ export const useAuth = () => {
             {
               email: storedEmail,
               password: storedPassword,
+              
             }
           );
           if (response.data.message) {
